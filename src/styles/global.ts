@@ -17,4 +17,17 @@ export const globalStyles = globalCss({
     fontFamily: 'Roboto',
     fontWeight: 400,
   },
+
+  'button, a': {
+    cursor: 'pointer',
+  },
+
+  'button:disabled': {
+    opacity: '0.6',
+    cursor: 'not-allowed',
+  },
+
+  a: {
+    textDecoration: 'none',
+  },
 })
