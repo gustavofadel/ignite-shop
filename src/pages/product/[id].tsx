@@ -4,6 +4,7 @@ import {
   ProductContainer,
   ProductDetails,
 } from '@/styles/pages/product'
+import { formatMoney } from '@/utils/formatMoney'
 import axios from 'axios'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
@@ -16,7 +17,8 @@ interface ProductProps {
     id: string
     name: string
     imageUrl: string
-    price: string
+    price: number
+    formattedPrice: string
     description: string
     defaultPriceId: string
   }
@@ -57,7 +59,7 @@ export default function Product({ product }: ProductProps) {
 
         <ProductDetails>
           <h1>{product.name}</h1>
-          <span>{product.price}</span>
+          <span>{product.formattedPrice}</span>
 
           <p>{product.description}</p>
 
@@ -83,13 +85,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
   params,
 }) => {
-  const productId = params.id
+  const productId = params?.id || ''
 
   const product = await stripe.products.retrieve(productId, {
     expand: ['default_price'],
   })
 
   const price = product.default_price as Stripe.Price
+  const unitAmount = (price.unit_amount ?? 0) / 100
+  const formattedUnitAmount = formatMoney(unitAmount)
 
   return {
     props: {
@@ -97,10 +101,8 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
         id: product.id,
         name: product.name,
         imageUrl: product.images[0],
-        price: new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }).format((price.unit_amount as number) / 100),
+        price: unitAmount,
+        formattedPrice: formattedUnitAmount,
         description: product.description,
         defaultPriceId: price.id,
       },

@@ -1,3 +1,4 @@
+import { CartItem } from '@/contexts/CartContext'
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
 import { X } from 'phosphor-react'
@@ -11,13 +12,6 @@ import {
   CartProductDetails,
   CartProductImage,
 } from './styles'
-
-interface CartItem {
-  id: string
-  imageUrl: string
-  name: string
-  price: string
-}
 
 export function Cart() {
   const [cartItems, setCartItems] = useState<CartItem[]>([

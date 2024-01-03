@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Stripe from 'stripe'
 
 import { CartButton } from '@/components/CartButton'
+import { formatMoney } from '@/utils/formatMoney'
 import 'keen-slider/keen-slider.min.css'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -15,7 +16,8 @@ interface HomeProps {
     id: string
     name: string
     imageUrl: string
-    price: string
+    price: number
+    formattedPrice: string
   }[]
 }
 
@@ -47,7 +49,7 @@ export default function Home({ products }: HomeProps) {
                 <footer>
                   <div>
                     <strong>{product.name}</strong>
-                    <span>{product.price}</span>
+                    <span>{product.formattedPrice}</span>
                   </div>
 
                   <CartButton color="green" size="large" type="button" />
@@ -68,15 +70,15 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const products = response.data.map((product) => {
     const price = product.default_price as Stripe.Price
+    const unitAmount = (price.unit_amount ?? 0) / 100
+    const formattedUnitAmount = formatMoney(unitAmount)
 
     return {
       id: product.id,
       name: product.name,
       imageUrl: product.images[0],
-      price: new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      }).format((price.unit_amount as number) / 100),
+      price: unitAmount,
+      formattedPrice: formattedUnitAmount,
     }
   })
 
