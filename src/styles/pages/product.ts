@@ -14,7 +14,7 @@ export const ImageContainer = styled('div', {
   width: '100%',
   maxWidth: 576,
   height: 656,
-  background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
+  background: '$gradientBackground',
   borderRadius: 8,
   padding: '0.25rem',
 
@@ -43,7 +43,7 @@ export const ProductDetails = styled('div', {
     color: '$green300',
   },
 
-  a: {
+  p: {
     marginTop: '2.5rem',
     fontSize: '$md',
     lineHeight: 1.6,

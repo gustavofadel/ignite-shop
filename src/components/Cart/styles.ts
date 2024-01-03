@@ -49,7 +49,7 @@ export const CartProduct = styled('div', {
 export const CartProductImage = styled('div', {
   width: '10.194rem',
   height: '9.3rem',
-  background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
+  background: '$gradientBackground',
   borderRadius: 8,
 
   display: 'flex',

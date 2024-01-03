@@ -5,6 +5,7 @@ import { GetStaticProps } from 'next'
 import Image from 'next/image'
 import Stripe from 'stripe'
 
+import { CartButton } from '@/components/CartButton'
 import 'keen-slider/keen-slider.min.css'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -44,8 +45,12 @@ export default function Home({ products }: HomeProps) {
                 <Image src={product.imageUrl} width={520} height={480} alt="" />
 
                 <footer>
-                  <strong>{product.name}</strong>
-                  <span>{product.price}</span>
+                  <div>
+                    <strong>{product.name}</strong>
+                    <span>{product.price}</span>
+                  </div>
+
+                  <CartButton color="green" size="large" type="button" />
                 </footer>
               </Product>
             </Link>

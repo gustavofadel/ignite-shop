@@ -41,7 +41,7 @@ export function Cart() {
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger>
+      <Dialog.Trigger asChild>
         <CartButton quantity={cartQuantity} />
       </Dialog.Trigger>
 
