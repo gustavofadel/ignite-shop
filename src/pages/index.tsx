@@ -93,13 +93,14 @@ export const getStaticProps: GetStaticProps = async () => {
       imageUrl: product.images[0],
       price: unitAmount,
       formattedPrice: formattedUnitAmount,
+      defaultPriceId: price.id,
     }
   })
 
   return {
     props: {
       products,
-    },
+    } as HomeProps,
     revalidate: 60 * 60 * 2,
   }
 }

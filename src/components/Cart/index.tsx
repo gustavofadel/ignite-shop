@@ -1,8 +1,10 @@
 import { useCart } from '@/hooks/useCart'
 import { formatMoney } from '@/utils/formatMoney'
 import * as Dialog from '@radix-ui/react-dialog'
+import axios from 'axios'
 import Image from 'next/image'
 import { X } from 'phosphor-react'
+import { useState } from 'react'
 import { CartButton } from '../CartButton'
 import {
   CartClose,
@@ -14,6 +16,9 @@ import {
 } from './styles'
 
 export function Cart() {
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
+    useState(false)
+
   const { cartItems, cartQuantity, cartItemsTotalPrice, removeCartItem } =
     useCart()
 
@@ -21,7 +26,32 @@ export function Cart() {
     removeCartItem(cartItemId)
   }
 
-  const isFinishButtonDisabled = !cartQuantity
+  async function handleCheckout() {
+    try {
+      setIsCreatingCheckoutSession(true)
+
+      const response = await axios.post('/api/checkout', {
+        products: cartItems,
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl
+    } catch (error) {
+      setIsCreatingCheckoutSession(false)
+
+      alert('Falha ao redirecionar ao checkout')
+    }
+  }
+
+  const isCartEmpty = cartQuantity === 0
+  const isFinishButtonDisabled = isCartEmpty || isCreatingCheckoutSession
+  const disabledFinishButtonText = isCartEmpty
+    ? 'Nenhum item no carrinho'
+    : 'Aguarde...'
+  const finishButtonText = isFinishButtonDisabled
+    ? disabledFinishButtonText
+    : 'Finalizar compra'
 
   return (
     <Dialog.Root>
@@ -74,8 +104,12 @@ export function Cart() {
               <p>{formatMoney(cartItemsTotalPrice)}</p>
             </div>
 
-            <button type="button" disabled={isFinishButtonDisabled}>
-              Finalizar compra
+            <button
+              type="button"
+              disabled={isFinishButtonDisabled}
+              onClick={handleCheckout}
+            >
+              {finishButtonText}
             </button>
           </CartDetails>
         </CartContent>
