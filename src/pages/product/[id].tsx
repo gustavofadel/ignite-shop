@@ -1,4 +1,5 @@
 import { CartItem } from '@/contexts/CartContext'
+import { useCart } from '@/hooks/useCart'
 import { stripe } from '@/lib/stripe'
 import {
   ImageContainer,
@@ -6,11 +7,9 @@ import {
   ProductDetails,
 } from '@/styles/pages/product'
 import { formatMoney } from '@/utils/formatMoney'
-import axios from 'axios'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import { useState } from 'react'
 import Stripe from 'stripe'
 
 interface ProductProps {
@@ -18,26 +17,16 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false)
+  const { addItemToCart, checkItemInCart } = useCart()
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSession(true)
-
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId,
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl
-    } catch (error) {
-      setIsCreatingCheckoutSession(false)
-
-      alert('Falha ao redirecionar ao checkout')
-    }
+  function handleAddItemToCart() {
+    addItemToCart(product)
   }
+
+  const itemAlreadyInCart = checkItemInCart(product.id)
+  const addItemToCartButtonText = itemAlreadyInCart
+    ? 'Produto adicionado no carrinho'
+    : 'Colocar na sacola'
 
   return (
     <>
@@ -56,11 +45,8 @@ export default function Product({ product }: ProductProps) {
 
           <p>{product.description}</p>
 
-          <button
-            disabled={isCreatingCheckoutSession}
-            onClick={handleBuyProduct}
-          >
-            Colocar na sacola
+          <button disabled={itemAlreadyInCart} onClick={handleAddItemToCart}>
+            {addItemToCartButtonText}
           </button>
         </ProductDetails>
       </ProductContainer>

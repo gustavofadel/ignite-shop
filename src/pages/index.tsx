@@ -43,6 +43,8 @@ export default function Home({ products }: HomeProps) {
 
       <HomeContainer ref={sliderRef} className="keen-slider">
         {products.map((product) => {
+          const itemAlreadyInCart = checkItemInCart(product.id)
+
           return (
             <Link
               href={`product/${product.id}`}
@@ -62,7 +64,7 @@ export default function Home({ products }: HomeProps) {
                     color="green"
                     size="large"
                     type="button"
-                    disabled={checkItemInCart(product.id)}
+                    disabled={itemAlreadyInCart}
                     onClick={(event) => handleAddItemToCart(event, product)}
                   />
                 </footer>
