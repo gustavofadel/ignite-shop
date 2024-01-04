@@ -1,3 +1,4 @@
+import { useCart } from '@/hooks/useCart'
 import { stripe } from '@/lib/stripe'
 import {
   ImageContainer,
@@ -8,6 +9,7 @@ import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect } from 'react'
 import Stripe from 'stripe'
 
 interface SuccessProps {
@@ -19,8 +21,14 @@ interface SuccessProps {
 }
 
 export default function Success({ customerName, products }: SuccessProps) {
+  const { cleanCart } = useCart()
+
   const shirtCount = products.length
   const shirtCountText = shirtCount === 1 ? 'camiseta' : 'camisetas'
+
+  useEffect(() => {
+    cleanCart()
+  }, [])
 
   return (
     <>

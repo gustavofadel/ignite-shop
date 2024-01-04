@@ -1,5 +1,6 @@
 import {
   addItemToCartAction,
+  cleanCartAction,
   removeCartItemAction,
 } from '@/reducers/cart/actions'
 import { cartReducer } from '@/reducers/cart/reducer'
@@ -23,6 +24,7 @@ interface CartContextType {
   addItemToCart: (newItem: CartItem) => void
   checkItemInCart: (cartItemId: string) => boolean
   removeCartItem: (cartItemId: string) => void
+  cleanCart: () => void
 }
 
 export const CartContext = createContext({} as CartContextType)
@@ -81,6 +83,10 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     dispatch(removeCartItemAction(cartItemId))
   }
 
+  function cleanCart() {
+    dispatch(cleanCartAction())
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -90,6 +96,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         addItemToCart,
         checkItemInCart,
         removeCartItem,
+        cleanCart,
       }}
     >
       {children}
