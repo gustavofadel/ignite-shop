@@ -3,20 +3,24 @@ import {
   removeCartItemAction,
 } from '@/reducers/cart/actions'
 import { cartReducer } from '@/reducers/cart/reducer'
-import { ReactNode, createContext, useEffect, useReducer } from 'react'
+import { ReactNode, useEffect, useReducer } from 'react'
+import { createContext } from 'use-context-selector'
 
-export interface CartItem {
+export interface Product {
   id: string
   imageUrl: string
   name: string
   price: number
   formattedPrice: string
+  description: string
+  defaultPriceId: string
 }
 
 interface CartContextType {
-  cartItems: CartItem[]
+  cartItems: Product[]
+  cartQuantity: number
   cartItemsTotalPrice: number
-  addItemToCart: (newItem: CartItem) => void
+  addItemToCart: (newItem: Product) => void
   checkItemInCart: (cartItemId: string) => boolean
   removeCartItem: (cartItemId: string) => void
 }
@@ -34,6 +38,10 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
       items: [],
     },
     (initialState) => {
+      if (typeof window === 'undefined') {
+        return initialState
+      }
+
       const storedStateAsJSON = localStorage.getItem(
         '@ignite-shop:cart-state-1.0.0',
       )
@@ -46,6 +54,8 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     },
   )
 
+  const cartQuantity = cartState.items.length
+
   const cartItemsTotalPrice = cartState.items.reduce(
     (total, item) => total + item.price,
     0,
@@ -54,10 +64,12 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   useEffect(() => {
     const stateJSON = JSON.stringify(cartState)
 
-    localStorage.setItem('@ignite-shop:cart-state-1.0.0', stateJSON)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('@ignite-shop:cart-state-1.0.0', stateJSON)
+    }
   }, [cartState])
 
-  function addItemToCart(newItem: CartItem) {
+  function addItemToCart(newItem: Product) {
     dispatch(addItemToCartAction(newItem))
   }
 
@@ -73,6 +85,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     <CartContext.Provider
       value={{
         cartItems: cartState.items,
+        cartQuantity,
         cartItemsTotalPrice,
         addItemToCart,
         checkItemInCart,

@@ -1,8 +1,8 @@
-import { CartItem } from '@/contexts/CartContext'
+import { useCart } from '@/hooks/useCart'
+import { formatMoney } from '@/utils/formatMoney'
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
 import { X } from 'phosphor-react'
-import { useState } from 'react'
 import { CartButton } from '../CartButton'
 import {
   CartClose,
@@ -14,23 +14,8 @@ import {
 } from './styles'
 
 export function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 'prod_PEDs2pjXxsTrCG',
-      imageUrl:
-        'https://files.stripe.com/links/MDB8YWNjdF8xT1BsQ2FHRlgxd1R3WFRWfGZsX3Rlc3RfZnBxNXl2bG5QZ2QyT0JPTDlncGhqaERD00hdDVVXn2',
-      name: 'Camiseta Maratona Explorer 2.0',
-      price: 'R$ 62,90',
-    },
-    {
-      id: 'prod_PEDs2pjXxsTrCG',
-      imageUrl:
-        'https://files.stripe.com/links/MDB8YWNjdF8xT1BsQ2FHRlgxd1R3WFRWfGZsX3Rlc3RfZnBxNXl2bG5QZ2QyT0JPTDlncGhqaERD00hdDVVXn2',
-      name: 'Camiseta Maratona Explorer 2.0',
-      price: 'R$ 62,90',
-    },
-  ])
-  const cartQuantity = cartItems.length
+  const { cartItems, cartQuantity, cartItemsTotalPrice } = useCart()
+
   const isFinishButtonDisabled = !cartQuantity
 
   return (
@@ -48,7 +33,7 @@ export function Cart() {
           <h2>Sacola de compras</h2>
 
           <section>
-            {cartItems.map((item) => (
+            {cartItems?.map((item) => (
               <CartProduct key={item.id}>
                 <CartProductImage>
                   <Image width={95} height={95} src={item.imageUrl} alt="" />
@@ -76,7 +61,7 @@ export function Cart() {
 
             <div>
               <span>Valor total</span>
-              <p>R$ 270,00</p>
+              <p>{formatMoney(cartItemsTotalPrice)}</p>
             </div>
 
             <button type="button" disabled={isFinishButtonDisabled}>

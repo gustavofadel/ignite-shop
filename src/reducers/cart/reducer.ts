@@ -1,9 +1,9 @@
-import { CartItem } from '@/contexts/CartContext'
+import { Product } from '@/contexts/CartContext'
 import { produce } from 'immer'
 import { ActionTypes } from './actions'
 
 interface CartState {
-  items: CartItem[]
+  items: Product[]
 }
 
 export function cartReducer(state: CartState, action: any) {
