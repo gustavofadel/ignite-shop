@@ -14,7 +14,12 @@ import {
 } from './styles'
 
 export function Cart() {
-  const { cartItems, cartQuantity, cartItemsTotalPrice } = useCart()
+  const { cartItems, cartQuantity, cartItemsTotalPrice, removeCartItem } =
+    useCart()
+
+  function handleRemoveItem(cartItemId: string) {
+    removeCartItem(cartItemId)
+  }
 
   const isFinishButtonDisabled = !cartQuantity
 
@@ -45,7 +50,12 @@ export function Cart() {
                     <strong>{item.formattedPrice}</strong>
                   </div>
 
-                  <button type="button">Remover</button>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem(item.id)}
+                  >
+                    Remover
+                  </button>
                 </CartProductDetails>
               </CartProduct>
             ))}
