@@ -6,28 +6,34 @@ import Image from 'next/image'
 import Stripe from 'stripe'
 
 import { CartButton } from '@/components/CartButton'
+import { CartItem } from '@/contexts/CartContext'
+import { useCart } from '@/hooks/useCart'
 import { formatMoney } from '@/utils/formatMoney'
 import 'keen-slider/keen-slider.min.css'
 import Head from 'next/head'
 import Link from 'next/link'
 
 interface HomeProps {
-  products: {
-    id: string
-    name: string
-    imageUrl: string
-    price: number
-    formattedPrice: string
-  }[]
+  products: CartItem[]
 }
 
 export default function Home({ products }: HomeProps) {
+  const { addItemToCart, checkItemInCart } = useCart()
+
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 3,
       spacing: 48,
     },
   })
+
+  function handleAddItemToCart(
+    event: React.MouseEvent<HTMLButtonElement>,
+    product: CartItem,
+  ) {
+    event.preventDefault()
+    addItemToCart(product)
+  }
 
   return (
     <>
@@ -52,7 +58,13 @@ export default function Home({ products }: HomeProps) {
                     <span>{product.formattedPrice}</span>
                   </div>
 
-                  <CartButton color="green" size="large" type="button" />
+                  <CartButton
+                    color="green"
+                    size="large"
+                    type="button"
+                    disabled={checkItemInCart(product.id)}
+                    onClick={(event) => handleAddItemToCart(event, product)}
+                  />
                 </footer>
               </Product>
             </Link>

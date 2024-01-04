@@ -6,7 +6,7 @@ import { cartReducer } from '@/reducers/cart/reducer'
 import { ReactNode, useEffect, useReducer } from 'react'
 import { createContext } from 'use-context-selector'
 
-export interface Product {
+export interface CartItem {
   id: string
   imageUrl: string
   name: string
@@ -17,10 +17,10 @@ export interface Product {
 }
 
 interface CartContextType {
-  cartItems: Product[]
+  cartItems: CartItem[]
   cartQuantity: number
   cartItemsTotalPrice: number
-  addItemToCart: (newItem: Product) => void
+  addItemToCart: (newItem: CartItem) => void
   checkItemInCart: (cartItemId: string) => boolean
   removeCartItem: (cartItemId: string) => void
 }
@@ -69,7 +69,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     }
   }, [cartState])
 
-  function addItemToCart(newItem: Product) {
+  function addItemToCart(newItem: CartItem) {
     dispatch(addItemToCartAction(newItem))
   }
 

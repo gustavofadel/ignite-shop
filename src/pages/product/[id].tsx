@@ -1,3 +1,4 @@
+import { CartItem } from '@/contexts/CartContext'
 import { stripe } from '@/lib/stripe'
 import {
   ImageContainer,
@@ -13,15 +14,7 @@ import { useState } from 'react'
 import Stripe from 'stripe'
 
 interface ProductProps {
-  product: {
-    id: string
-    name: string
-    imageUrl: string
-    price: number
-    formattedPrice: string
-    description: string
-    defaultPriceId: string
-  }
+  product: CartItem
 }
 
 export default function Product({ product }: ProductProps) {

@@ -42,7 +42,7 @@ export function Cart() {
                 <CartProductDetails>
                   <div>
                     <p>{item.name}</p>
-                    <strong>{item.price}</strong>
+                    <strong>{item.formattedPrice}</strong>
                   </div>
 
                   <button type="button">Remover</button>
